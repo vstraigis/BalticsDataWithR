@@ -1,2 +1,2 @@
 # BalticsDataWithR
-Projectfro defense about baltics, data visualized with R language
+Project about Baltics well being, data visualized with R language
