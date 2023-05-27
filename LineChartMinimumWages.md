@@ -70,4 +70,4 @@ ggplot(merged_data, aes(x = HourlyMinimumWage, y = Deaths, col = Country)) +
 
 ```
 
-![DeathsAndMinimumWage](img\DeathsAndMinimumWage.png)
+![DeathsAndMinimumWage](img/DeathsAndMinimumWage.png)
