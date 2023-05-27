@@ -107,3 +107,19 @@ ggplot(data, aes(x = Country, y = Value)) +
 ![MinimumHoursOfWorkToEscapePoverty](img/MinimumHoursOfWorkToEscapePoverty.png)
 =======
 >>>>>>> 4706f95b72b422fa365e953fd69939e729839498
+
+```
+# Read the dataset
+data <- read.csv("MinimumHoursOfWorkToEscapePoverty.csv")
+
+# Load required packages
+library(ggplot2)
+
+# Create the bar chart
+ggplot(data, aes(x = Year, y = Value, fill = Country)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  facet_wrap(~ Family.type, nrow = 2) +
+  labs(x = "Year", y = "Minimum Hours of Work", fill = "Country") +
+  theme_minimal()
+```
+
