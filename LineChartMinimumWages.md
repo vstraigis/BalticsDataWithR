@@ -122,4 +122,4 @@ ggplot(data, aes(x = Year, y = Value, fill = Country)) +
   labs(x = "Year", y = "Minimum Hours of Work", fill = "Country") +
   theme_minimal()
 ```
-
+![MinimumHoursOfWorkToEscapePoverty](img/barChart.png)
