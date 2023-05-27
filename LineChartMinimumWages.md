@@ -70,4 +70,37 @@ ggplot(merged_data, aes(x = HourlyMinimumWage, y = Deaths, col = Country)) +
 
 ```
 
-![DeathsAndMinimumWage](img\DeathsAndMinimumWage.png)
+![DeathsAndMinimumWage](img/DeathsAndMinimumWage.png)
+
+---
+```{r}
+# Install and load the required packages
+install.packages("ggplot2")
+library(ggplot2)
+
+# Load the data from CSV file
+data <- read.csv("MinimumHoursOfWorkToEscapePoverty.csv")
+
+# Filter the data for a specific country
+estonia_data <- subset(data, Country == "Estonia")
+
+# Create a line plot with points
+ggplot(estonia_data, aes(x = Year, y = Value)) +
+  geom_line() +
+  geom_point() +
+  labs(x = "Year", y = "Minimum Hours of Work", title = "Minimum Hours of Work to Escape Poverty in Estonia")
+
+# Create a bar plot with multiple countries
+ggplot(data, aes(x = Country, y = Value, fill = Country)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Country", y = "Minimum Hours of Work", title = "Minimum Hours of Work to Escape Poverty by Country") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Create a box plot to compare distributions
+ggplot(data, aes(x = Country, y = Value)) +
+  geom_boxplot() +
+  labs(x = "Country", y = "Minimum Hours of Work", title = "Distribution of Minimum Hours of Work to Escape Poverty by Country") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  ```
+
+![MinimumHoursOfWorkToEscapePoverty](img/MinimumHoursOfWorkToEscapePoverty.png)
