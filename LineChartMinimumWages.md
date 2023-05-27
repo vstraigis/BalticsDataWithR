@@ -1,4 +1,6 @@
 ```{r}
+libarary(ggplot2)
+data <- read.csv("data.csv")
 countries <- c("Estonia", "Lithuania", "Latvia")
 filtered_data <- data[data$Country %in% countries, ]
 
@@ -17,6 +19,9 @@ plot
 ---
 
 ```{r}
+library(ggplot2)
+library(dplyr)
+data <- read.csv("data.csv")
 filtered_data <- data %>%
   filter(SERIES == "PPP") %>%
   select(COUNTRY, Time, Value) %>%
