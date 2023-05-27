@@ -71,6 +71,7 @@ ggplot(merged_data, aes(x = HourlyMinimumWage, y = Deaths, col = Country)) +
 ```
 
 ![DeathsAndMinimumWage](img/DeathsAndMinimumWage.png)
+<<<<<<< HEAD
 
 ---
 ```{r}
@@ -104,3 +105,5 @@ ggplot(data, aes(x = Country, y = Value)) +
   ```
 
 ![MinimumHoursOfWorkToEscapePoverty](img/MinimumHoursOfWorkToEscapePoverty.png)
+=======
+>>>>>>> 4706f95b72b422fa365e953fd69939e729839498
